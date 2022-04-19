@@ -1,0 +1,232 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": ".",
+    "version": "1.0.0",
+    "title": "Swagger Garage"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/vehicles": {
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "get all vehicles in the garage or get all the vehicles in the garage by sorting fields",
+        "parameters": [
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "sort by fields : type , modelName ,licensePlate, energyPercentage, maxAirPressure",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get a list of vehicles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Vehicle"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "add vehicle",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "vehicle parametrs",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Vehicle"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "get the vehicle that created"
+          },
+          "400": {
+            "description": "Invalid argument"
+          },
+          "409": {
+            "description": "same license plate"
+          }
+        }
+      }
+    },
+    "/vehicles/{licensePlate}": {
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "get vehicle by license plate",
+        "parameters": [
+          {
+            "name": "licensePlate",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Vehicle"
+            }
+          },
+          "404": {
+            "description": "Vehicle not found"
+          }
+        }
+      }
+    },
+    "/vehicles/{licensePlate}/addEnergy/{energy}": {
+      "post": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "Adds energy to specific vehicle by license plate",
+        "parameters": [
+          {
+            "name": "licensePlate",
+            "in": "path",
+            "description": "license plate of the specific vehicle.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "energy",
+            "in": "path",
+            "description": "ammount of energy to add",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid argument value"
+          },
+          "404": {
+            "description": "Vehicle not found"
+          }
+        }
+      }
+    },
+    "/vehicles/{licensePlate}/InflateWheelsToMax": {
+      "post": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": "inflate wheels of a specific vehicle to maximum.",
+        "parameters": [
+          {
+            "name": "licensePlate",
+            "in": "path",
+            "description": "license plate of the specific vehicle.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Vehicle not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Vehicle": {
+      "description": "abstract vehicle class",
+      "type": "object",
+      "required": [
+        "type",
+        "modelName",
+        "licensePlate"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/VehicleType"
+        },
+        "modelName": {
+          "type": "string",
+          "example": "subaru"
+        },
+        "licensePlate": {
+          "type": "string"
+        },
+        "energyPercentage": {
+          "type": "number"
+        },
+        "engine": {
+          "$ref": "#/definitions/Engine"
+        },
+        "wheels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Wheel"
+          }
+        }
+      }
+    },
+    "VehicleType": {
+      "description": "vehicle type",
+      "enum": [
+        "GasCar",
+        "ElectricCar",
+        "GasMotorcycle",
+        "ElectricMotorcycle",
+        "Truck"
+      ]
+    },
+    "Engine": {
+      "type": "object",
+      "description": "abstract engine class",
+      "properties": {
+        "currentEnergy": {
+          "type": "number"
+        },
+        "maximumEnergyCapacity": {
+          "type": "number"
+        }
+      }
+    },
+    "Wheel": {
+      "type": "object",
+      "properties": {
+        "curAirPressure": {
+          "type": "number"
+        },
+        "maximumAirPressure": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
