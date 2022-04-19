@@ -8,12 +8,20 @@
         <version>2.6.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Internal repo</name>
+            <url>file:///home</url>
+        </repository>
+    </distributionManagement>
     <groupId>com.example</groupId>
     <artifactId>GarageServer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>GarageServer</name>
     <description>GarageServer</description>
     <properties>
+        <start-class>com.example.garageserver.App.GarageServerApplication</start-class>
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
@@ -34,6 +42,25 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>${start-class}</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>

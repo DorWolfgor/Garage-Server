@@ -1,37 +1,41 @@
 package com.example.garageserver.Model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.util.*;
 
 
 public abstract class Vehicle {
+
+    protected VehicleType type;
     protected String modelName;
-    protected String licenseNumber;
+    protected String licensePlate;
     protected float energyPercentage;
     protected Engine engine;
     protected List<Wheel> wheels;
 
-    public Vehicle(Engine engine, float maxWheelPressure, int numOfWheels,String modelName,String licenseNumber) {
-        this.licenseNumber = licenseNumber;
+    public Vehicle(Engine engine, String curAirPressure, String maxWheelPressure, int numOfWheels, String modelName, String licenseNumber) throws ParseException {
+        this.licensePlate = licenseNumber;
         this.modelName = modelName;
         this.engine = engine;
         this.wheels = new ArrayList<>(numOfWheels);
-        for (int i = 0; i < numOfWheels; i++) {
-            this.wheels.add(new Wheel(maxWheelPressure));
+        if (maxWheelPressure == null){
+            maxWheelPressure = String.valueOf(new Random().nextFloat() * 70f);
         }
-        this.CalcEnergyPercentage();
+        for (int i = 0; i < numOfWheels; i++) {
+            this.wheels.add(new Wheel(curAirPressure,maxWheelPressure));
+        }
+        energyPercentage = engine.EnergyPercentageCalc();
     }
+
+    public VehicleType getType() {
+        return type;
+    }
+
 
     public void FillToMaxAir() {
         wheels.forEach(Wheel::FillMaxAir);
     }
 
-    public void CalcEnergyPercentage() {
-        energyPercentage = engine.EnergyPercentageCalc();
-    }
 
     public Engine getEngine() {
         return engine;
@@ -39,7 +43,7 @@ public abstract class Vehicle {
 
     public void AddEnergy(float energy) {
         getEngine().FillEnergy(energy);
-        CalcEnergyPercentage();
+        energyPercentage = engine.EnergyPercentageCalc();
     }
 
     public String getModelName() {
@@ -50,15 +54,16 @@ public abstract class Vehicle {
         this.modelName = modelName;
     }
 
-    public String getLicenseNumber() {
-        return licenseNumber;
+    public String getLicensePlate() {
+        return licensePlate;
     }
 
-    public void setLicenseNumber(String licenseNumber) {
-        this.licenseNumber = licenseNumber;
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
     }
 
     public float getEnergyPercentage() {
+        energyPercentage = engine.EnergyPercentageCalc();
         return energyPercentage;
     }
 
@@ -77,4 +82,10 @@ public abstract class Vehicle {
     public void setWheels(List<Wheel> wheels) {
         this.wheels = wheels;
     }
+
+    public float getMaxAirPressure(){
+        return wheels.get(0).getMaximumAirPressure();
+    }
+
+
 }

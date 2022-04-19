@@ -6,10 +6,19 @@ public abstract class Engine {
     protected float currentEnergy;
     protected float maximumEnergyCapacity;
 
-    public Engine(float maxEnergy) throws IllegalArgumentException {
-        setMaximumEnergyCapacity(maxEnergy);
-        Random rand = new Random();
-        currentEnergy = rand.nextFloat() * maxEnergy;
+    public Engine(String currentEnergy,String maxEnergy) throws IllegalArgumentException {
+        if(maxEnergy == null){
+            maximumEnergyCapacity = new Random().nextFloat() * 70f;
+        }
+        else{
+            setMaximumEnergyCapacity(Float.parseFloat(maxEnergy));
+        }
+        if(currentEnergy == null){
+            this.currentEnergy = new Random().nextFloat() * maximumEnergyCapacity;
+        }
+        else{
+            FillEnergy(Float.parseFloat(currentEnergy));
+        }
     }
 
     private void setMaximumEnergyCapacity(float maximumEnergyCapacity) throws IllegalArgumentException {

@@ -1,16 +1,21 @@
 package com.example.garageserver.Model;
 
+import java.text.ParseException;
 import java.util.Random;
 public class Wheel {
 
     private float curAirPressure;
     private float maximumAirPressure;
 
-    public Wheel(float maxPressure) throws IllegalArgumentException{
-        setMaximumAirPressure(maxPressure);
-        Random rand = new Random();
-        curAirPressure = rand.nextFloat() * maxPressure;
+    public Wheel(String curAirPressure, String maxPressure) throws IllegalArgumentException, ParseException {
+        setMaximumAirPressure(Float.parseFloat(maxPressure));
+        if (curAirPressure == null) {
+            this.curAirPressure = new Random().nextFloat() * maximumAirPressure;
+        } else {
+            FillAir(Float.parseFloat(curAirPressure));
+        }
     }
+
 
     public float getCurAirPressure() {
         return curAirPressure;
